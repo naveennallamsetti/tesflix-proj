@@ -45,6 +45,13 @@ export default function UploadPage() {
             <input type="text" name="title" required className={styles.input} />
           </div>
           <div className={styles.inputGroup}>
+            <label>Category</label>
+            <select name="type" className={styles.input} style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'white' }}>
+              <option value="movie" style={{ color: 'black' }}>Movie</option>
+              <option value="series" style={{ color: 'black' }}>Series</option>
+            </select>
+          </div>
+          <div className={styles.inputGroup}>
             <label>Description</label>
             <textarea name="description" rows="4" required className={styles.input} />
           </div>

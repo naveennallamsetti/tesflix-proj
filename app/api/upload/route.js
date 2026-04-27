@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import path from 'path';
-
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION || "us-east-1",
-});
+import { writeFile } from 'fs/promises';
 
 export async function POST(request) {
   try {
@@ -13,6 +9,7 @@ export async function POST(request) {
     
     const title = formData.get('title');
     const description = formData.get('description');
+    const type = formData.get('type') || 'movie';
     const videoFile = formData.get('videoFile');
     const thumbnailFile = formData.get('thumbnailFile');
 
@@ -20,33 +17,27 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const bucketName = process.env.S3_BUCKET_NAME || 'tesflix-videos';
-
-    const uploadToS3 = async (file, prefix) => {
+    const uploadToLocal = async (file, prefix) => {
       const ext = path.extname(file.name);
       const fileName = `${prefix}-${Date.now()}${ext}`;
       const buffer = Buffer.from(await file.arrayBuffer());
       
-      const command = new PutObjectCommand({
-        Bucket: bucketName,
-        Key: fileName,
-        Body: buffer,
-        ContentType: file.type,
-      });
-
-      await s3Client.send(command);
-      return `https://${bucketName}.s3.amazonaws.com/${fileName}`;
+      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
+      await writeFile(filePath, buffer);
+      
+      return `/uploads/${fileName}`;
     };
 
     const [videoUrl, thumbnailUrl] = await Promise.all([
-      uploadToS3(videoFile, 'video'),
-      uploadToS3(thumbnailFile, 'thumb')
+      uploadToLocal(videoFile, 'video'),
+      uploadToLocal(thumbnailFile, 'thumb')
     ]);
 
     const video = await prisma.video.create({
       data: {
         title,
         description,
+        type,
         videoUrl,
         thumbnailUrl,
       }

@@ -18,3 +18,16 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = await params;
+    await prisma.video.delete({
+      where: { id }
+    });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Delete video error:', error);
+    return NextResponse.json({ error: 'Failed to delete video' }, { status: 500 });
+  }
+}
