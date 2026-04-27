@@ -22,6 +22,7 @@ export default function Navbar() {
               <Link href="/" className={styles.link}>Home</Link>
               <Link href="/series" className={styles.link}>Series</Link>
               <Link href="/movies" className={styles.link}>Movies</Link>
+              <Link href="/games" className={styles.link}>Games</Link>
               <button 
                 className={styles.navButton} 
                 onClick={() => setIsTodoOpen(true)}

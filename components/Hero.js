@@ -7,7 +7,14 @@ export default function Hero({ video }) {
   return (
     <div className={styles.hero}>
       <div className={styles.imageContainer}>
-        <img src={video.thumbnailUrl} alt={video.title} className={styles.image} />
+        <video 
+          src={video.videoUrl} 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          className={styles.image}
+        />
         <div className={styles.overlay}></div>
       </div>
       <div className={styles.content}>
