@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: tesflix
-        image: AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/tesflix:latest
+        image: naveennallamsetti/tesflix-hub:latest
         ports:
         - containerPort: 3000
         envFrom:

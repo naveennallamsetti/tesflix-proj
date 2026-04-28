@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_ACCOUNT_ID = credentials('aws-account-id')
         AWS_REGION = 'us-east-1'
-        ECR_REPO_NAME = 'tesflix'
+        DOCKER_HUB_REPO = 'naveennallamsetti/tesflix-hub'
         IMAGE_TAG = "${env.BUILD_ID}"
         CLUSTER_NAME = 'tesflix-cluster'
     }
@@ -26,24 +26,25 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${ECR_REPO_NAME}:${IMAGE_TAG} ."
-                sh "docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${IMAGE_TAG}"
-                sh "docker tag ${ECR_REPO_NAME}:${IMAGE_TAG} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:latest"
+                sh "docker build -t ${DOCKER_HUB_REPO}:${IMAGE_TAG} ."
+                sh "docker tag ${DOCKER_HUB_REPO}:${IMAGE_TAG} ${DOCKER_HUB_REPO}:latest"
             }
         }
 
-        stage('Push to ECR') {
+        stage('Push to Docker Hub') {
             steps {
-                sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-                sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${IMAGE_TAG}"
-                sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:latest"
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin"
+                    sh "docker push ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
+                    sh "docker push ${DOCKER_HUB_REPO}:latest"
+                }
             }
         }
 
         stage('Deploy to EKS') {
             steps {
                 sh "aws eks update-kubeconfig --region ${AWS_REGION} --name ${CLUSTER_NAME}"
-                sh "kubectl set image deployment/tesflix-deployment tesflix=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${IMAGE_TAG} --record"
+                sh "kubectl set image deployment/tesflix-deployment tesflix=${DOCKER_HUB_REPO}:${IMAGE_TAG} --record"
                 
                 // Run database migrations on one of the running pods
                 sh '''
