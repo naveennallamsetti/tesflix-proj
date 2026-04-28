@@ -1,6 +1,8 @@
 import VideoCarousel from '@/components/VideoCarousel';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Movies - Tesflix',
 };

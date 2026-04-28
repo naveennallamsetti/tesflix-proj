@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import styles from './video.module.css';
 
+export const dynamic = 'force-dynamic';
+
 export default async function VideoPage({ params }) {
   const { id } = await params;
   
