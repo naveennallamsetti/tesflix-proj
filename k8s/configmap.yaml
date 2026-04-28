@@ -5,4 +5,5 @@ metadata:
 data:
   NODE_ENV: "production"
   AWS_REGION: "us-east-1"
-  S3_BUCKET_NAME: "tesflix-videos"
+  AWS_S3_BUCKET_NAME: "tesflix-media-2686"
+
