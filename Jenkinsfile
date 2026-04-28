@@ -55,7 +55,7 @@ pipeline {
                 
                 // Run database migrations on one of the running pods
                 sh '''
-                POD_NAME=$(kubectl get pod -l app=tesflix -o jsonpath="{.items[0].metadata.name}")
+                POD_NAME=$(kubectl get pod -l app=tesflix --field-selector status.phase=Running -o jsonpath="{.items[0].metadata.name}")
                 kubectl exec $POD_NAME -- npx prisma db push
                 '''
             }
