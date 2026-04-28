@@ -17,9 +17,14 @@ export default function TodoSidebar({ isOpen, onClose }) {
     try {
       const res = await fetch('/api/todos');
       const data = await res.json();
-      setTodos(data);
+      if (Array.isArray(data)) {
+        setTodos(data);
+      } else {
+        setTodos([]);
+      }
     } catch (error) {
       console.error('Failed to fetch todos:', error);
+      setTodos([]);
     }
   };
 
