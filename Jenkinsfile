@@ -44,6 +44,10 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 sh "aws eks update-kubeconfig --region ${AWS_REGION} --name ${CLUSTER_NAME}"
+                
+                // Apply Kubernetes manifests for new clusters
+                sh "kubectl apply -f k8s/"
+                
                 sh "kubectl set image deployment/tesflix-deployment tesflix=${DOCKER_HUB_REPO}:${IMAGE_TAG} --record"
                 
                 // Run database migrations on one of the running pods
