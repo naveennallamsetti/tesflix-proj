@@ -50,10 +50,13 @@ pipeline {
                 
                 sh "kubectl set image deployment/tesflix-deployment tesflix=${DOCKER_HUB_REPO}:${IMAGE_TAG} --record"
                 
+                // Wait for deployment to finish rolling out
+                sh "kubectl rollout status deployment/tesflix-deployment --timeout=180s"
+                
                 // Run database migrations on one of the running pods
                 sh '''
                 POD_NAME=$(kubectl get pod -l app=tesflix -o jsonpath="{.items[0].metadata.name}")
-                kubectl exec -it $POD_NAME -- npx prisma migrate deploy
+                kubectl exec $POD_NAME -- npx prisma db push
                 '''
             }
         }
