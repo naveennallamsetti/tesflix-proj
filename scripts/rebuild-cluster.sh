@@ -12,8 +12,8 @@ eksctl create cluster \
   --name tesflix-cluster \
   --region us-east-1 \
   --nodegroup-name standard-workers \
-  --node-type t3.medium \
-  --nodes 3 \
+  --node-type m7i-flex.large \
+  --nodes 2 \
   --nodes-min 1 \
   --nodes-max 4 \
   --managed
