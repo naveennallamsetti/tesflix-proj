@@ -8,10 +8,15 @@ export const metadata = {
 };
 
 export default async function SeriesPage() {
-  const series = await prisma.video.findMany({
-    where: { type: 'series' },
-    orderBy: { createdAt: 'desc' }
-  });
+  let series = [];
+  try {
+    series = await prisma.video.findMany({
+      where: { type: 'series' },
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("Database connection failed, showing empty state.");
+  }
 
   return (
     <div style={{ padding: '20px 4%' }}>

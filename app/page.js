@@ -5,9 +5,14 @@ import { prisma } from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const videos = await prisma.video.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
+  let videos = [];
+  try {
+    videos = await prisma.video.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("Database connection failed, showing empty state.");
+  }
 
   const featuredVideo = videos.length > 0 ? videos[0] : null;
 
