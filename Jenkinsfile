@@ -52,12 +52,6 @@ pipeline {
                 
                 // Wait for deployment to finish rolling out
                 sh "kubectl rollout status deployment/tesflix-deployment --timeout=180s"
-                
-                // Run database migrations on one of the running pods
-                sh '''
-                POD_NAME=$(kubectl get pod -l app=tesflix --field-selector status.phase=Running -o jsonpath="{.items[0].metadata.name}")
-                kubectl exec $POD_NAME -- npx prisma@6 db push
-                '''
             }
         }
     }
