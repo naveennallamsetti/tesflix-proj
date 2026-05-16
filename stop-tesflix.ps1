@@ -16,7 +16,7 @@ Start-Sleep -Seconds 60
 # Step 2: Destroy Terraform infrastructure
 Write-Host "`n[2/3] Destroying Terraform Infrastructure (VPC, EKS Cluster, Nodes)..." -ForegroundColor Cyan
 Push-Location .\terraform
-terraform destroy -auto-approve -var="grafana_admin_password=admin"
+..\terraform destroy -auto-approve -var="grafana_admin_password=admin"
 Pop-Location
 
 Write-Host "`n[3/3] Shutdown complete! Your AWS billing has been stopped for the night." -ForegroundColor Green

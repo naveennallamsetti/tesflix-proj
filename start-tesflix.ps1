@@ -11,7 +11,7 @@ Write-Host "==========================================================" -Foregro
 # Step 1: Provision Infrastructure
 Write-Host "`n[1/5] Provisioning Terraform Infrastructure (VPC, EKS Cluster, Nodes)..." -ForegroundColor Cyan
 Push-Location .\terraform
-terraform apply -auto-approve -var="grafana_admin_password=admin"
+..\terraform apply -auto-approve -var="grafana_admin_password=admin"
 Pop-Location
 
 # Step 2: Connect Kubernetes

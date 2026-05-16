@@ -59,3 +59,4 @@ public/uploads/*
 .env
 change-batch.json
 route53-update.json
+terraform/.terraform.tfstate.lock.info
