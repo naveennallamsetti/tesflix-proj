@@ -41,3 +41,21 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+
+# Terraform
+terraform/terraform.tfstate*
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform.exe
+
+# Local bin
+eksctl.exe
+eksctl.zip
+
+# Uploads
+public/uploads/*
+
+# Secrets
+.env
+change-batch.json
+route53-update.json

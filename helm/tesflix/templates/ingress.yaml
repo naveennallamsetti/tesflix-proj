@@ -1,0 +1,29 @@
+# helm/tesflix/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "tesflix.fullname" . }}
+  annotations:
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    - hosts:
+        {{- range .Values.ingress.tls.hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          - path: {{ .paths[0].path | quote }}
+            pathType: {{ .paths[0].pathType | quote }}
+            backend:
+              service:
+                name: {{ include "tesflix.fullname" . }}
+                port:
+                  number: {{ $.Values.service.port }}
+    {{- end }}
